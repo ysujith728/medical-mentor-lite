@@ -1,196 +1,306 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import GlassPanel from '../components/ui/GlassPanel';
+import { Play, ChevronDown, Bell, Search, Plus, MoreVertical, Send, ArrowRightLeft, ArrowDownToLine, Receipt, FileText, Settings } from 'lucide-react';
 
 const LandingPage = () => {
   return (
-    <div className="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary">
-      {/* Top Navigation Bar for Landing (slightly different from MainLayout as it's transparent) */}
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 bg-slate-950/40 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]">
-        <div className="flex items-center gap-8">
-          <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-transparent font-headline tracking-tight">MEDIX AI</span>
-          <div className="hidden md:flex gap-6">
-            <Link className="text-cyan-400 border-b-2 border-cyan-400 pb-1 font-headline tracking-tight transition-all" to="/dashboard">Dashboard</Link>
-            <Link className="text-slate-400 hover:text-white transition-colors font-headline tracking-tight" to="/terminology">Study Library</Link>
-            <Link className="text-slate-400 hover:text-white transition-colors font-headline tracking-tight" to="/quiz">Practice Exams</Link>
-            <Link className="text-slate-400 hover:text-white transition-colors font-headline tracking-tight" to="/anatomy">Visualizer</Link>
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex gap-2 mr-4 hidden md:flex">
-            <button className="p-2 text-slate-400 hover:bg-white/5 rounded-full transition-all active:scale-95">
-              <span className="material-symbols-outlined">notifications</span>
-            </button>
-            <button className="p-2 text-slate-400 hover:bg-white/5 rounded-full transition-all active:scale-95">
-              <span className="material-symbols-outlined">settings</span>
-            </button>
-          </div>
-          <button className="px-6 py-2 bg-gradient-to-r from-primary to-primary-container text-on-primary-container font-bold rounded-xl active:scale-95 transition-transform shadow-[0_0_20px_rgba(67,243,246,0.3)] hover:shadow-[0_0_30px_rgba(67,243,246,0.5)]">
-            Go Pro
-          </button>
-          <div className="w-10 h-10 rounded-full overflow-hidden border border-outline-variant hover:border-primary transition-colors cursor-pointer">
-            <img alt="User Avatar" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc1KrY3hAzs_b3mzGZkIzfzajdRzqAwyBk7b4QN7QmFTzfWyf7022-UjIx-ESAbie6iLUdWeK8xqKYZ-O4rkxzX_fazXz7rDV1E-tcBOq3RWgLgroK7ttKkFLA_Dki6uESzgYqFdHmy6yCyZiwDspQlEbGiX5gUoYb3WAQqX4Ce4vgczdtoQcaRgRwtHYldy5qr6MLeKizq_v6FmJENfhI9iQozpmU5KaewI-Q_wn04vlOv--wO7-w_j5sLRS4SC1VbZGjXlwq5xYm"/>
-          </div>
-        </div>
-      </nav>
+    <div className="nexora-theme h-screen flex flex-col overflow-hidden relative" style={{ background: 'hsl(0 0% 100%)' }}>
+      
+      {/* Background Video */}
+      <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
+        style={{ opacity: 0.15, mixBlendMode: 'luminosity' }}
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260319_015952_e1deeb12-8fb7-4071-a42a-60779fc64ab6.mp4" type="video/mp4" />
+      </video>
 
-      <main className="relative min-h-screen neural-bg flex flex-col items-center justify-center pt-20 px-6">
-        {/* Hero Content */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-6xl mx-auto text-center z-10"
-        >
-          <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel border border-primary/20 text-primary text-sm font-medium tracking-wide">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-            </span>
-            SYSTEM STATUS: OPTIMAL NEURAL LINK
+      {/* Content wrapper */}
+      <div className="relative z-10 flex flex-col items-center w-full h-full">
+        
+        {/* Navbar */}
+        <nav className="w-full flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 font-inter shrink-0">
+          {/* Left: Logo */}
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-semibold tracking-tight text-nx-foreground">✦ Nexora</span>
           </div>
-          <h1 className="text-6xl md:text-8xl font-bold font-headline tracking-tighter text-on-surface mb-6 leading-tight">
-            Understand Medicine. <br/>
-            <span className="bg-gradient-to-r from-primary via-tertiary to-secondary bg-clip-text text-transparent">Don't Memorize It.</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-on-surface-variant max-w-3xl mx-auto mb-12 font-body leading-relaxed">
-            AI-powered explanations, quizzes, and 3D anatomy in one place. 
-            Experience the future of medical education.
-          </p>
 
-          {/* Immersive Search Interface */}
-          <div className="relative w-full max-w-3xl mx-auto mb-8">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-secondary/30 blur-2xl rounded-full opacity-50"></div>
-            <div className="relative flex items-center glass-panel glow-border-primary p-2 rounded-2xl">
-              <span className="material-symbols-outlined ml-4 text-primary text-3xl">psychology</span>
-              <input className="w-full bg-transparent border-none focus:ring-0 text-xl py-4 px-4 text-on-surface placeholder:text-outline/60 font-body" placeholder="Ask anything about clinical medicine..." type="text"/>
-              <button className="bg-primary text-on-primary-container px-8 py-3 rounded-xl font-bold font-headline flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all w-max">
-                ANALYZE <span className="material-symbols-outlined text-sm">bolt</span>
+          {/* Center: Nav links (existing functional paths) */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/dashboard" className="text-sm text-nx-muted-foreground hover:text-nx-foreground transition-colors">Dashboard</Link>
+            <Link to="/terminology" className="text-sm text-nx-muted-foreground hover:text-nx-foreground transition-colors">Study Library</Link>
+            <Link to="/quiz" className="text-sm text-nx-muted-foreground hover:text-nx-foreground transition-colors">Practice Exams</Link>
+            <Link to="/anatomy" className="text-sm text-nx-muted-foreground hover:text-nx-foreground transition-colors">Visualizer</Link>
+          </div>
+
+          {/* Right CTA */}
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-3 mr-2">
+              <button className="text-nx-muted-foreground hover:text-nx-foreground transition-colors">
+                <Bell className="w-4 h-4" />
               </button>
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-nx-border">
+                <img alt="Avatar" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc1KrY3hAzs_b3mzGZkIzfzajdRzqAwyBk7b4QN7QmFTzfWyf7022-UjIx-ESAbie6iLUdWeK8xqKYZ-O4rkxzX_fazXz7rDV1E-tcBOq3RWgLgroK7ttKkFLA_Dki6uESzgYqFdHmy6yCyZiwDspQlEbGiX5gUoYb3WAQqX4Ce4vgczdtoQcaRgRwtHYldy5qr6MLeKizq_v6FmJENfhI9iQozpmU5KaewI-Q_wn04vlOv--wO7-w_j5sLRS4SC1VbZGjXlwq5xYm" />
+              </div>
             </div>
-          </div>
-
-          {/* Suggestion Pills */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {['Pharmacology Basics', 'Diagnostic Reasoning', 'Anatomy Map', 'Case Studies'].map((pill, i) => (
-              <button key={i} className="px-4 py-2 rounded-full glass-panel border border-outline-variant/30 text-sm text-on-surface-variant hover:border-primary/50 hover:text-primary transition-all flex items-center gap-2">
-                <span className="material-symbols-outlined text-sm">
-                  {i === 0 ? 'pill' : i === 1 ? 'biotech' : i === 2 ? 'body_system' : 'history'}
-                </span> {pill}
+            <Link to="/dashboard">
+              <button className="rounded-full px-5 py-2 text-sm font-medium font-inter bg-nx-primary text-nx-primary-foreground hover:opacity-90 transition-opacity">
+                Go Pro
               </button>
-            ))}
-          </div>
-
-          {/* CTA Cluster */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-            <Link to="/dashboard" className="w-full md:w-auto px-10 py-5 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-bold rounded-2xl text-lg font-headline hover:scale-105 hover:shadow-[0_0_40px_rgba(67,243,246,0.4)] transition-all flex items-center justify-center gap-3">
-              Start Exploring <span className="material-symbols-outlined">arrow_forward</span>
-            </Link>
-            <Link to="/quiz" className="w-full md:w-auto px-10 py-5 glass-panel border border-secondary/40 text-on-surface font-bold rounded-2xl text-lg font-headline hover:bg-secondary/10 transition-all flex items-center justify-center gap-3">
-              Try Quiz <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>quiz</span>
             </Link>
           </div>
-        </motion.div>
+        </nav>
 
-        {/* Floating Decorative Modules (Asymmetric Bento) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full max-w-7xl mx-auto mt-24 mb-20 px-6">
+        {/* Hero Section */}
+        <main className="flex-1 w-full flex flex-col items-center pt-8 md:pt-14 px-4 overflow-hidden">
+          
+          {/* Badge */}
           <motion.div 
-            initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
-            className="md:col-span-4 glass-panel glow-border-primary p-8 rounded-3xl group"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-nx-border bg-nx-background px-4 py-1.5 text-sm text-nx-muted-foreground font-inter shadow-sm"
           >
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-all">
-              <span className="material-symbols-outlined text-primary text-3xl">view_in_ar</span>
-            </div>
-            <h3 className="text-2xl font-bold font-headline mb-3">Spatial Learning</h3>
-            <p className="text-on-surface-variant leading-relaxed mb-6">Interact with hyper-realistic 3D anatomical models that respond to your queries in real-time.</p>
-            <div className="relative h-48 rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent z-10"></div>
-              <img alt="3D Anatomy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM6YAm88_MS6XFaNPFNVL8s7A4-dyFmJ37o-WajUIhTeK8hDxVOjzwsQ0uk3B7K2VtwjS8XOBasp6uaWEFMCYZDRCtfkDn0NL_Djlj2NF3A426IkOdOYsc85DoMqOjr2tRjctIy5kCnmgEs5Gsfpqt7mVjbbfcIcNqDDP5JedGG2EzRtOLKZW2saVxkvsN4I17wtExtt2GHwbvl4LKAr4XCj9mS2n8W89OXOkaFsmZmA_zNKbZBGZ451ToLLW2401F0-EfeMjrUs4E"/>
-            </div>
+            Now with GPT-5 support ✨
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="md:col-span-5 glass-panel border border-tertiary/20 p-8 rounded-3xl relative overflow-hidden"
+          {/* Headline */}
+          <motion.h1 
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-center font-display text-5xl md:text-6xl lg:text-[5rem] leading-[0.95] tracking-tight text-nx-foreground max-w-xl"
           >
-            <div className="absolute top-0 right-0 p-4">
-              <span className="material-symbols-outlined text-tertiary/20 text-9xl">analytics</span>
-            </div>
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold font-headline mb-3">Neural Feedback</h3>
-              <p className="text-on-surface-variant leading-relaxed mb-8">Our AI analyzes your knowledge gaps to curate a custom curriculum tailored to your brain's pace.</p>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between text-sm font-medium">
-                  <span>Knowledge Retention</span>
-                  <span className="text-tertiary">92%</span>
+            The Future of <em className="font-display italic not-italic" style={{ fontStyle: 'italic' }}>Smarter</em> Automation
+          </motion.h1>
+
+          {/* Subheadline */}
+          <motion.p 
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-4 text-center text-base md:text-lg text-nx-muted-foreground max-w-[650px] leading-relaxed font-inter"
+          >
+            Automate your busywork with intelligent agents that learn, adapt, and execute—so your team can focus on what matters most.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div 
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-5 flex items-center gap-3"
+          >
+            <Link to="/dashboard">
+              <button className="rounded-full px-6 py-3.5 text-sm font-medium font-inter bg-nx-primary text-nx-primary-foreground hover:opacity-90 transition-opacity">
+                Book a demo
+              </button>
+            </Link>
+            <button className="h-11 w-11 rounded-full border-0 bg-nx-background flex items-center justify-center hover:bg-nx-secondary transition-colors"
+                    style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+              <Play className="h-4 w-4 fill-current text-nx-foreground" />
+            </button>
+          </motion.div>
+
+          {/* Dashboard Preview */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="mt-8 w-full max-w-5xl"
+          >
+            <div className="rounded-2xl overflow-hidden p-3 md:p-4" style={{
+              background: 'rgba(255, 255, 255, 0.4)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              boxShadow: 'var(--nx-shadow-dashboard)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)'
+            }}>
+              <div className="flex w-full rounded-xl overflow-hidden bg-nx-background border border-nx-border shadow-sm text-[11px] select-none pointer-events-none font-inter" style={{ height: '55vh', minHeight: '400px', color: 'hsl(210 14% 17%)' }}>
+                
+                {/* Sidebar */}
+                <div className="w-40 border-r border-nx-border bg-nx-background flex-col hidden sm:flex shrink-0">
+                  <div className="flex items-center gap-2 p-4 border-b border-nx-border">
+                    <div className="w-5 h-5 rounded bg-nx-foreground text-nx-background flex items-center justify-center font-bold text-xs">N</div>
+                    <span className="font-semibold text-sm text-nx-foreground">Nexora</span>
+                    <ChevronDown className="w-3 h-3 text-nx-muted-foreground ml-auto" />
+                  </div>
+                  <div className="flex-1 py-4 px-2 flex flex-col gap-0.5 text-nx-foreground">
+                    <div className="flex items-center px-2 py-1.5 bg-nx-secondary rounded-md font-medium text-nx-foreground">Home</div>
+                    <div className="flex items-center justify-between px-2 py-1.5 text-nx-muted-foreground rounded-md">
+                      Tasks <span className="px-1.5 rounded-full text-[9px] font-medium" style={{ background: 'hsl(239 84% 67% / 0.1)', color: 'hsl(239 84% 67%)' }}>10</span>
+                    </div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Transactions</div>
+                    <div className="flex items-center justify-between px-2 py-1.5 text-nx-muted-foreground rounded-md">
+                      Payments <ChevronDown className="w-3 h-3" />
+                    </div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Cards</div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Capital</div>
+                    <div className="flex items-center justify-between px-2 py-1.5 text-nx-muted-foreground rounded-md">
+                      Accounts <ChevronDown className="w-3 h-3" />
+                    </div>
+                    
+                    <div className="mt-4 px-2 text-[10px] text-nx-muted-foreground font-semibold uppercase tracking-wider mb-1">Workflows</div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Trade routes</div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Payments</div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Notifications</div>
+                    <div className="flex items-center px-2 py-1.5 text-nx-muted-foreground rounded-md">Settings</div>
+                  </div>
                 </div>
-                <div className="w-full h-2 bg-surface rounded-full overflow-hidden">
-                  <motion.div initial={{ width: 0 }} whileInView={{ width: '92%' }} className="h-full bg-gradient-to-r from-tertiary to-secondary"></motion.div>
+
+                {/* Main Content */}
+                <div className="flex-1 flex flex-col" style={{ background: 'hsl(0 0% 96% / 0.3)' }}>
+                  
+                  {/* Top bar */}
+                  <div className="h-12 border-b border-nx-border flex items-center justify-between px-4 bg-nx-background shrink-0">
+                    <div className="flex items-center gap-2 px-2 py-1.5 rounded-md border border-nx-border text-nx-muted-foreground" style={{ background: 'hsl(0 0% 96% / 0.5)', width: 'clamp(120px, 20vw, 256px)' }}>
+                      <Search className="w-3.5 h-3.5 shrink-0" />
+                      <span>Search...</span>
+                      <span className="ml-auto text-[9px] border border-nx-border px-1 rounded shrink-0">⌘K</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="hidden md:flex items-center gap-1.5 px-2 py-1 border border-nx-border rounded-md shadow-sm text-nx-foreground">
+                        <span className="font-medium">Move Money</span>
+                      </div>
+                      <Bell className="w-4 h-4 text-nx-muted-foreground" />
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center font-medium text-[10px]" style={{ background: 'hsl(239 84% 67% / 0.2)', border: '1px solid hsl(239 84% 67% / 0.3)', color: 'hsl(239 84% 67%)' }}>JB</div>
+                    </div>
+                  </div>
+
+                  {/* Dashboard Cards */}
+                  <div className="p-4 md:p-6 flex flex-col gap-4 overflow-y-auto no-scrollbar">
+                    <h2 className="text-sm font-semibold text-nx-foreground">Welcome, Jane</h2>
+                    
+                    {/* Action buttons row */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar shrink-0">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-medium shadow-sm whitespace-nowrap" style={{ background: 'hsl(239 84% 67%)', color: 'white' }}><Send className="w-3 h-3" /> Send</div>
+                      <div className="flex items-center gap-1.5 bg-nx-background border border-nx-border px-3 py-1.5 rounded-full text-[10px] font-medium shadow-sm whitespace-nowrap text-nx-foreground"><ArrowRightLeft className="w-3 h-3" /> Request</div>
+                      <div className="flex items-center gap-1.5 bg-nx-background border border-nx-border px-3 py-1.5 rounded-full text-[10px] font-medium shadow-sm whitespace-nowrap text-nx-foreground"><ArrowRightLeft className="w-3 h-3" /> Transfer</div>
+                      <div className="flex items-center gap-1.5 bg-nx-background border border-nx-border px-3 py-1.5 rounded-full text-[10px] font-medium shadow-sm whitespace-nowrap text-nx-foreground"><ArrowDownToLine className="w-3 h-3" /> Deposit</div>
+                      <div className="flex items-center gap-1.5 bg-nx-background border border-nx-border px-3 py-1.5 rounded-full text-[10px] font-medium shadow-sm whitespace-nowrap text-nx-foreground"><Receipt className="w-3 h-3" /> Pay Bill</div>
+                      <div className="flex items-center gap-1.5 bg-nx-background border border-nx-border px-3 py-1.5 rounded-full text-[10px] font-medium shadow-sm whitespace-nowrap text-nx-foreground"><FileText className="w-3 h-3" /> Create Invoice</div>
+                      <div className="ml-auto text-[10px] text-nx-muted-foreground flex items-center gap-1 whitespace-nowrap pl-2"><Settings className="w-3 h-3" /> Customize</div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4 shrink-0">
+                      {/* Balance Card */}
+                      <div className="flex-1 basis-0 bg-nx-background border border-nx-border rounded-xl p-4 shadow-sm flex flex-col min-h-[160px]">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ background: 'hsl(239 84% 67% / 0.2)' }}>
+                            <div className="w-2 h-2 rounded-full" style={{ background: 'hsl(239 84% 67%)' }} />
+                          </div>
+                          <span className="font-medium text-nx-muted-foreground">Mercury Balance</span>
+                        </div>
+                        <div className="text-2xl font-semibold text-nx-foreground mb-2">$8,450,190<span className="text-xs text-nx-muted-foreground">.32</span></div>
+                        
+                        <div className="flex items-center justify-between text-[10px] mb-2">
+                          <span className="text-nx-muted-foreground">Last 30 Days</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-emerald-500 font-medium">+$1.8M</span>
+                            <span className="text-rose-500 font-medium">-$900K</span>
+                          </div>
+                        </div>
+
+                        {/* SVG Chart */}
+                        <div className="h-16 w-full mt-auto relative -mx-1">
+                          <svg className="w-full h-full overflow-visible" viewBox="0 0 100 40" preserveAspectRatio="none">
+                            <defs>
+                              <linearGradient id="nxChartGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="hsl(239 84% 67%)" stopOpacity="0.15" />
+                                <stop offset="100%" stopColor="hsl(239 84% 67%)" stopOpacity="0" />
+                              </linearGradient>
+                            </defs>
+                            <path 
+                              d="M 0 40 L 0 25 C 10 25 15 10 25 15 C 35 20 40 5 50 10 C 60 15 65 30 75 25 C 85 20 90 5 100 8 L 100 40 Z" 
+                              fill="url(#nxChartGrad)" 
+                            />
+                            <path 
+                              d="M 0 25 C 10 25 15 10 25 15 C 35 20 40 5 50 10 C 60 15 65 30 75 25 C 85 20 90 5 100 8" 
+                              fill="none" 
+                              stroke="hsl(239 84% 67%)" 
+                              strokeWidth="1.5" 
+                              vectorEffect="non-scaling-stroke"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Accounts Card */}
+                      <div className="flex-1 basis-0 bg-nx-background border border-nx-border rounded-xl p-4 shadow-sm flex flex-col min-h-[160px]">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-sm text-nx-foreground">Accounts</span>
+                          <div className="flex items-center gap-2">
+                            <Plus className="w-4 h-4 text-nx-muted-foreground" />
+                            <MoreVertical className="w-4 h-4 text-nx-muted-foreground" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col flex-1 justify-center">
+                          <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid hsl(0 0% 90% / 0.5)' }}>
+                            <span className="text-nx-muted-foreground">Credit</span>
+                            <span className="font-medium text-nx-foreground">$98,125.50</span>
+                          </div>
+                          <div className="flex items-center justify-between py-2" style={{ borderBottom: '1px solid hsl(0 0% 90% / 0.5)' }}>
+                            <span className="text-nx-muted-foreground">Treasury</span>
+                            <span className="font-medium text-nx-foreground">$6,750,200.00</span>
+                          </div>
+                          <div className="flex items-center justify-between py-2">
+                            <span className="text-nx-muted-foreground">Operations</span>
+                            <span className="font-medium text-nx-foreground">$1,592,864.82</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Transactions Table */}
+                    <div className="bg-nx-background border border-nx-border rounded-xl p-4 shadow-sm flex-1 shrink-0">
+                      <h3 className="font-semibold mb-3 text-sm text-nx-foreground">Recent Transactions</h3>
+                      <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 mb-2 text-nx-muted-foreground font-medium pb-2" style={{ borderBottom: '1px solid hsl(0 0% 90%)' }}>
+                        <div>Date</div>
+                        <div>Description</div>
+                        <div className="text-right">Amount</div>
+                        <div>Status</div>
+                      </div>
+                      <div className="flex flex-col gap-2 mt-2">
+                        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 items-center py-1">
+                          <div className="text-nx-muted-foreground">Today</div>
+                          <div className="font-medium text-nx-foreground">AWS</div>
+                          <div className="text-right font-medium text-nx-foreground">-$5,200.00</div>
+                          <div><span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[9px] font-medium border border-amber-200">Pending</span></div>
+                        </div>
+                        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 items-center py-1">
+                          <div className="text-nx-muted-foreground">Yesterday</div>
+                          <div className="font-medium text-nx-foreground">Client Payment</div>
+                          <div className="text-right text-emerald-600 font-medium">+$125,000.00</div>
+                          <div><span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[9px] font-medium border border-emerald-200">Completed</span></div>
+                        </div>
+                        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 items-center py-1">
+                          <div className="text-nx-muted-foreground">May 14</div>
+                          <div className="font-medium text-nx-foreground">Payroll</div>
+                          <div className="text-right font-medium text-nx-foreground">-$85,450.00</div>
+                          <div><span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[9px] font-medium border border-emerald-200">Completed</span></div>
+                        </div>
+                        <div className="grid grid-cols-[1fr_2fr_1fr_1fr] gap-4 items-center py-1">
+                          <div className="text-nx-muted-foreground">May 12</div>
+                          <div className="font-medium text-nx-foreground">Office Supplies</div>
+                          <div className="text-right font-medium text-nx-foreground">-$1,200.00</div>
+                          <div><span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-[9px] font-medium border border-emerald-200">Completed</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
-                <div className="flex items-center justify-between text-sm font-medium pt-2">
-                  <span>Diagnostic Speed</span>
-                  <span className="text-primary">+15%</span>
-                </div>
-                <div className="w-full h-2 bg-surface rounded-full overflow-hidden">
-                  <motion.div initial={{ width: 0 }} whileInView={{ width: '78%' }} className="h-full bg-gradient-to-r from-primary to-cyan-500"></motion.div>
-                </div>
+
               </div>
             </div>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.4 }}
-            className="md:col-span-3 glass-panel border border-secondary/20 p-8 rounded-3xl flex flex-col justify-between"
-          >
-            <div>
-              <span className="material-symbols-outlined text-secondary text-5xl mb-6 glow-text-secondary">workspace_premium</span>
-              <h3 className="text-2xl font-bold font-headline mb-3">Expert Verified</h3>
-              <p className="text-on-surface-variant leading-relaxed">Content cross-referenced with latest peer-reviewed journals and medical textbooks.</p>
-            </div>
-            <div className="mt-8 flex -space-x-3">
-              <img alt="Doctor 1" className="w-10 h-10 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDbj6kUJCm3ccAR1TcNiCqQ_aTN0G98SJcbccNFWJPiMjyjOfojawmqZ0rrCZ2h1hvpNfcYP_j8dkDregDqLCRUlbuBsks0_eFD9_2qNCkVZyuh5qr0hWe420sODjBomWdrDz16Z2pzbLphyYQolw-WWde-VRKhWDoWXOvXrB68_GqVhAaPduKDRb86ksSQhbNF-7fI6RsnJkU1st6tB4kuAwfz6KYw6T9CJP6Qkvbmw02oC_EOswXhx8m5foPfOmzLWLUcCnSuHlV"/>
-              <img alt="Doctor 2" className="w-10 h-10 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ltgFNfUXfom5Sn0EL8rwY37IEvAbllreezmneMzsEa72vYZn8vkHE7nkqh6VqTVwp_w8s1lW_JhEUjnZAKDOuN08Ti4XKV-qSNywXCShxy2ocqvAmZCDzUOaBR4O00TS_0I67TzsKI7pC3kVvhFgptqfKjvIeUSY4sPcpI6FBC3GakRHKYu3HWIxeVnD0590v71AhafIZk67p7I5oipzjL427j6GpxTAtVJwfUziJHY9ZU2cyFp5O0h7HklIZ3M7rnJ-034ClQhR"/>
-              <img alt="Doctor 3" className="w-10 h-10 rounded-full border-2 border-surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv8qvTDdW3Xl5SVEOO0HhAk8192Uac-k9niLK63mpvCfDtkXaVaT7ejAwyHx0mY6ZvRKnHuQ7Cw8MLcR6Knh_Wyn2VIFyAs1n7TnORUf3HRXRwVYrQFH0cO72UBUPu_T1d1Y8Qpqwn7Uwujr4E3VZHfFW-EJM9VBOKd_f-ODZsaG7igPAqXe9MDoS73mh2AqgZ2s5gp_O8E2ism59a55RbQP33Oj4EIGS7tx2bLCkiSubzlSRLEXKKaHLMDuwL_COHIKqjr3i70Zy5"/>
-              <div className="w-10 h-10 rounded-full bg-surface-container border-2 border-surface flex items-center justify-center text-[10px] font-bold">+200</div>
-            </div>
-          </motion.div>
-        </div>
-      </main>
-
-      <footer className="w-full bg-surface-container-low py-12 px-8 border-t border-white/5 relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex flex-col gap-2">
-            <span className="text-xl font-bold font-headline text-primary tracking-tight">MEDIX AI</span>
-            <p className="text-sm text-outline">Revolutionizing Medical Education through Intelligence.</p>
-          </div>
-          <div className="flex gap-12 text-sm text-on-surface-variant">
-            <div className="flex flex-col gap-3">
-              <span className="text-on-surface font-bold">Platform</span>
-              <Link className="hover:text-primary transition-colors" to="/dashboard">Neural Map</Link>
-              <Link className="hover:text-primary transition-colors" to="/terminology">Study Library</Link>
-              <Link className="hover:text-primary transition-colors" to="/anatomy">3D Anatomy</Link>
-            </div>
-            <div className="flex flex-col gap-3">
-              <span className="text-on-surface font-bold">Company</span>
-              <a className="hover:text-primary transition-colors" href="#">About</a>
-              <a className="hover:text-primary transition-colors" href="#">Privacy</a>
-              <a className="hover:text-primary transition-colors" href="#">Contact</a>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <button className="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-primary/20 transition-all">
-              <span className="material-symbols-outlined text-sm">share</span>
-            </button>
-            <button className="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:bg-primary/20 transition-all">
-              <span className="material-symbols-outlined text-sm">public</span>
-            </button>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/5 text-center text-xs text-outline/50 uppercase tracking-widest">
-            © 2024 MEDIX AI SYSTEMS. ALL RIGHTS RESERVED.
-        </div>
-      </footer>
+        </main>
+      </div>
     </div>
   );
 };

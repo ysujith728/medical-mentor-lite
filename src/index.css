@@ -1,7 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   NEW DESIGN SYSTEM TOKENS (Nexora / Landing)
+   Scoped to .nexora-theme so they don't 
+   interfere with existing pages.
+   ============================================ */
+.nexora-theme {
+  --nx-background: 0 0% 100%;
+  --nx-foreground: 210 14% 17%;
+  --nx-primary: 210 14% 17%;
+  --nx-primary-foreground: 0 0% 100%;
+  --nx-secondary: 0 0% 96%;
+  --nx-secondary-foreground: 0 0% 9%;
+  --nx-muted: 0 0% 96%;
+  --nx-muted-foreground: 184 5% 55%;
+  --nx-accent: 239 84% 67%;
+  --nx-accent-foreground: 0 0% 100%;
+  --nx-border: 0 0% 90%;
+  --nx-ring: 239 84% 67%;
+  --nx-radius: 0.5rem;
+  --nx-font-display: 'Instrument Serif', serif;
+  --nx-font-body: 'Inter', sans-serif;
+  --nx-shadow-dashboard: 0 25px 80px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================
+   ORIGINAL DESIGN SYSTEM (Neural Medix)
+   Preserved for Dashboard, Quiz, Anatomy etc.
+   ============================================ */
 @layer base {
   body {
     @apply bg-background text-on-surface font-body selection:bg-primary/30 selection:text-primary min-h-screen overflow-x-hidden;

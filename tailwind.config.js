@@ -1,3 +1,7 @@
+import tailwindcssAnimate from "tailwindcss-animate";
+import containerQueries from "@tailwindcss/container-queries";
+import tailwindForms from "@tailwindcss/forms";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -8,6 +12,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ============================================
+        // ORIGINAL Material Design Tokens (Neural Medix)
+        // Preserved for Dashboard, Quiz, Anatomy, etc.
+        // ============================================
         "on-tertiary-container": "#ffffff",
         "on-surface-variant": "#aca7cc",
         "secondary-dim": "#ff50fc",
@@ -58,7 +66,24 @@ export default {
         "on-primary-container": "#004a4b",
         "inverse-surface": "#fcf8ff",
         "tertiary-container": "#9c42f4",
-        "on-secondary-fixed": "#610062"
+        "on-secondary-fixed": "#610062",
+
+        // ============================================
+        // NEW Nexora Tokens (for Landing Page only)
+        // Using hsl(var(--nx-*)) pattern
+        // ============================================
+        "nx-background": "hsl(var(--nx-background))",
+        "nx-foreground": "hsl(var(--nx-foreground))",
+        "nx-primary": "hsl(var(--nx-primary))",
+        "nx-primary-foreground": "hsl(var(--nx-primary-foreground))",
+        "nx-secondary": "hsl(var(--nx-secondary))",
+        "nx-secondary-foreground": "hsl(var(--nx-secondary-foreground))",
+        "nx-muted": "hsl(var(--nx-muted))",
+        "nx-muted-foreground": "hsl(var(--nx-muted-foreground))",
+        "nx-accent": "hsl(var(--nx-accent))",
+        "nx-accent-foreground": "hsl(var(--nx-accent-foreground))",
+        "nx-border": "hsl(var(--nx-border))",
+        "nx-ring": "hsl(var(--nx-ring))",
       },
       borderRadius: {
         "DEFAULT": "0.25rem",
@@ -69,12 +94,16 @@ export default {
       fontFamily: {
         "headline": ["Space Grotesk", "sans-serif"],
         "body": ["Manrope", "sans-serif"],
-        "label": ["Manrope", "sans-serif"]
+        "label": ["Manrope", "sans-serif"],
+        // New fonts for landing page
+        "display": ["'Instrument Serif'", "serif"],
+        "inter": ["'Inter'", "sans-serif"],
       }
     },
   },
   plugins: [
-    import('@tailwindcss/forms'),
-    import('@tailwindcss/container-queries')
+    tailwindForms,
+    containerQueries,
+    tailwindcssAnimate,
   ],
-}
+};
