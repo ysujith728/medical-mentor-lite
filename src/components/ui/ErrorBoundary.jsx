@@ -1,8 +1,5 @@
 import React from 'react';
 
-/**
- * Standard Error Boundary component to prevent React component trees from crashing entirely.
- */
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -20,12 +17,12 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-[400px] flex flex-col items-center justify-center text-error p-8 border border-error/20 rounded-2xl bg-error/5">
+        <div className="min-h-[400px] flex flex-col items-center justify-center text-rose-600 p-8 border border-rose-200 rounded-2xl bg-rose-50">
           <span className="material-symbols-outlined text-5xl mb-4">warning</span>
-          <h2 className="font-headline text-2xl font-bold mb-2">Component Rendering Failure</h2>
-          <p className="text-on-surface-variant text-sm mb-4">A critical error occurred within this neural module.</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-2 bg-error/20 rounded-xl font-bold text-on-surface hover:bg-error/40 transition-colors">
-            Reboot Interface
+          <h2 className="font-inter text-2xl font-bold mb-2">Something went wrong</h2>
+          <p className="text-gray-500 text-sm mb-4">A critical error occurred within this module.</p>
+          <button onClick={() => window.location.reload()} className="px-6 py-2 bg-rose-100 rounded-full font-semibold text-rose-700 hover:bg-rose-200 transition-colors">
+            Reload Page
           </button>
         </div>
       );
