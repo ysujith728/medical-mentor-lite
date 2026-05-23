@@ -3,6 +3,19 @@ import { create } from 'zustand';
 const useAppStore = create((set) => ({
   moduleActive: 'Pathology v2.4',
   setModuleActive: (module) => set({ moduleActive: module }),
+
+  // Dark Mode State
+  darkMode: localStorage.getItem('medix-dark-mode') === 'true',
+  toggleDarkMode: () => set((state) => {
+    const next = !state.darkMode;
+    localStorage.setItem('medix-dark-mode', next);
+    if (next) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    return { darkMode: next };
+  }),
   
   // Terminology Engine State
   searchTerm: '',
