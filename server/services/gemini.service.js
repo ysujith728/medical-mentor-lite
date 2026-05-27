@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { redis } from '../config/redis.js';
 import crypto from 'crypto';
@@ -6,11 +6,11 @@ import crypto from 'crypto';
 dotenv.config();
 
 let ai = null;
-if (process.env.GEMINI_API_KEY) {
-  ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  console.log("Gemini AI initialized successfully in service layer.");
+if (process.env.GROQ_API_KEY) {
+  ai = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  console.log("Groq AI initialized successfully in service layer.");
 } else {
-  console.warn("No GEMINI_API_KEY found. Falling back to mock responses.");
+  console.warn("No GROQ_API_KEY found. Falling back to mock responses.");
 }
 
 const CACHE_TTL_SECONDS = 60 * 60 * 24; // 24 hours
@@ -36,18 +36,18 @@ export const generateJSONResponse = async (prompt, fallbackMock) => {
     }
   }
 
-  // Hit Gemini API if not cached
+  // Hit Groq API if not cached
   if (ai) {
     try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-        }
+      const completion = await ai.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.7,
+        max_tokens: 1024,
+        response_format: { type: "json_object" }
       });
       
-      let text = response.text || '';
+      let text = completion.choices[0]?.message?.content || "";
       text = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
       const result = JSON.parse(text);
 
@@ -63,7 +63,7 @@ export const generateJSONResponse = async (prompt, fallbackMock) => {
 
       return result;
     } catch (e) {
-      console.error("AI Generation Error:", e.message || e);
+      console.error("Groq Generation Error:", e.message || e);
       return fallbackMock;
     }
   }
