@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import MainLayout from './layouts/MainLayout';
 import LandingPage from './pages/LandingPage';
@@ -9,7 +9,11 @@ import QuizConfigurator from './pages/QuizConfigurator';
 import QuizEngine from './pages/QuizEngine';
 import AnatomyVisualizer from './pages/AnatomyVisualizer';
 import KnowledgeGraphPage from './pages/KnowledgeGraphPage';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ProtectedRoute from './components/ProtectedRoute';
 import useAppStore from './store/useAppStore';
+import useAuthStore from './store/useAuthStore';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,8 +26,12 @@ const queryClient = new QueryClient({
 
 function App() {
   const { darkMode } = useAppStore();
+  const { initialize } = useAuthStore();
 
-  // Sync dark mode class on initial mount and whenever it changes
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -37,14 +45,22 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/terminology" element={<TerminologyExplorer />} />
-            <Route path="/quiz" element={<QuizConfigurator />} />
-            <Route path="/quiz/engine" element={<QuizEngine />} />
-            <Route path="/anatomy" element={<AnatomyVisualizer />} />
-            <Route path="/graph/:term" element={<KnowledgeGraphPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Protected Application Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/terminology" element={<TerminologyExplorer />} />
+              <Route path="/quiz" element={<QuizConfigurator />} />
+              <Route path="/quiz/engine" element={<QuizEngine />} />
+              <Route path="/anatomy" element={<AnatomyVisualizer />} />
+              <Route path="/graph/:term" element={<KnowledgeGraphPage />} />
+            </Route>
           </Route>
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </QueryClientProvider>
