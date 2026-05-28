@@ -17,6 +17,17 @@ const useAppStore = create((set) => ({
     return { darkMode: next };
   }),
   
+  // UI & Modals State
+  isAuthModalOpen: false,
+  setAuthModalOpen: (isOpen) => set({ isAuthModalOpen: isOpen }),
+  isSettingsModalOpen: false,
+  setSettingsModalOpen: (isOpen) => set({ isSettingsModalOpen: isOpen }),
+  fontScale: localStorage.getItem('medix-font-scale') || 'medium',
+  setFontScale: (scale) => set(() => {
+    localStorage.setItem('medix-font-scale', scale);
+    return { fontScale: scale };
+  }),
+  
   // Terminology Engine State
   searchTerm: '',
   setSearchTerm: (query) => set({ searchTerm: query }),
