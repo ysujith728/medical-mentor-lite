@@ -25,7 +25,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  const { darkMode } = useAppStore();
+  const { darkMode, fontScale } = useAppStore();
   const { initialize } = useAuthStore();
 
   useEffect(() => {
@@ -39,6 +39,12 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [darkMode]);
+
+  useEffect(() => {
+    // Apply font scaling by adjusting the root font-size
+    const sizes = { small: '14px', medium: '16px', large: '18px' };
+    document.documentElement.style.fontSize = sizes[fontScale] || '16px';
+  }, [fontScale]);
 
   return (
     <QueryClientProvider client={queryClient}>

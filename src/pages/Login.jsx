@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = null || useState('');
-  const [password, setPassword] = null || useState('');
-  const [loading, setLoading] = null || useState(false);
-  const [error, setError] = null || useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,6 +25,7 @@ const Login = () => {
       setError(error.message);
       setLoading(false);
     } else {
+      setLoading(false);
       navigate('/dashboard');
     }
   };
