@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import useAppStore from '../store/useAppStore';
+import useAuthStore from '../store/useAuthStore';
 
 const SideNavBar = () => {
   const { moduleActive } = useAppStore();
@@ -51,28 +53,45 @@ const SideNavBar = () => {
       </div>
 
       <div className="mt-auto border-t border-gray-200 dark:border-gray-700/60 pt-4 space-y-1">
-        <button className="w-full bg-gray-900 dark:bg-indigo-600 text-white py-2.5 rounded-full font-medium text-sm mb-3
-                           flex items-center justify-center gap-2
-                           hover:bg-gray-800 dark:hover:bg-indigo-500 transition-colors">
+        <motion.button 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full bg-gray-900 dark:bg-indigo-600 text-white py-2.5 rounded-full font-medium text-sm mb-3
+                     flex items-center justify-center gap-2 transition-colors"
+        >
           <span className="material-symbols-outlined text-sm">add</span>
           New Simulation
-        </button>
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg
-                        text-gray-400 dark:text-gray-500
-                        hover:bg-gray-50 dark:hover:bg-gray-800/60
-                        hover:text-gray-600 dark:hover:text-gray-300
-                        cursor-pointer text-sm transition-colors">
+        </motion.button>
+        
+        <motion.div 
+          whileHover={{ scale: 1.02, x: 4 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg
+                     text-gray-400 dark:text-gray-500
+                     hover:bg-gray-50 dark:hover:bg-gray-800/60
+                     hover:text-gray-600 dark:hover:text-gray-300
+                     cursor-pointer text-sm transition-colors"
+        >
           <span className="material-symbols-outlined text-xl">help_outline</span>
           <span>Help Center</span>
-        </div>
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg
-                        text-rose-400 dark:text-rose-400
-                        hover:bg-rose-50 dark:hover:bg-rose-900/20
-                        hover:text-rose-600 dark:hover:text-rose-300
-                        transition-colors cursor-pointer text-sm">
+        </motion.div>
+
+        <motion.div 
+          whileHover={{ scale: 1.02, x: 4 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={async () => {
+            await useAuthStore.getState().signOut();
+            window.location.href = '/login';
+          }}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg
+                     text-rose-400 dark:text-rose-400
+                     hover:bg-rose-50 dark:hover:bg-rose-900/20
+                     hover:text-rose-600 dark:hover:text-rose-300
+                     transition-colors cursor-pointer text-sm"
+        >
           <span className="material-symbols-outlined text-xl">logout</span>
           <span>Sign Out</span>
-        </div>
+        </motion.div>
       </div>
     </aside>
   );

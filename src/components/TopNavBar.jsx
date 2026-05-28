@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Bell, Settings, Sun, Moon } from 'lucide-react';
+import { motion } from 'framer-motion';
 import useAppStore from '../store/useAppStore';
 import JAMAAnimatedLogo from './JAMAAnimatedLogo';
 
@@ -51,18 +52,25 @@ const TopNavBar = () => {
 
       <div className="flex items-center gap-2">
         {/* Bell */}
-        <button className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200
-                           hover:bg-gray-100 dark:hover:bg-gray-800
-                           transition-all rounded-lg hidden md:flex">
+        <motion.button 
+          whileHover={{ scale: 1.1, backgroundColor: darkMode ? '#1f2937' : '#f3f4f6' }}
+          whileTap={{ scale: 0.9 }}
+          className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200
+                     transition-all rounded-lg hidden md:flex"
+        >
           <Bell className="w-4 h-4" />
-        </button>
+        </motion.button>
 
         {/* Settings */}
-        <button className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200
-                           hover:bg-gray-100 dark:hover:bg-gray-800
-                           transition-all rounded-lg hidden md:flex">
+        <motion.button 
+          onClick={() => useAppStore.getState().setSettingsModalOpen(true)}
+          whileHover={{ scale: 1.1, backgroundColor: darkMode ? '#1f2937' : '#f3f4f6' }}
+          whileTap={{ scale: 0.9 }}
+          className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200
+                     transition-all rounded-lg hidden md:flex"
+        >
           <Settings className="w-4 h-4" />
-        </button>
+        </motion.button>
 
         {/* Dark Mode Toggle */}
         <button
@@ -101,18 +109,26 @@ const TopNavBar = () => {
         </button>
 
         {/* Go Pro */}
-        <button className="px-5 py-2 bg-gray-900 dark:bg-indigo-600 text-white font-medium text-sm
-                           rounded-full hover:bg-gray-800 dark:hover:bg-indigo-500
-                           transition-colors whitespace-nowrap ml-1">
+        <motion.button 
+          whileHover={{ scale: 1.05, boxShadow: "0px 0px 8px rgb(99, 102, 241)" }}
+          whileTap={{ scale: 0.95 }}
+          className="px-5 py-2 bg-gray-900 dark:bg-indigo-600 text-white font-medium text-sm
+                     rounded-full transition-colors whitespace-nowrap ml-1"
+        >
           Go Pro
-        </button>
+        </motion.button>
 
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600
-                        hover:border-gray-400 dark:hover:border-gray-400 transition-colors cursor-pointer shrink-0">
+        <motion.div 
+          whileHover={{ scale: 1.1, borderColor: '#6366f1' }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => useAppStore.getState().setAuthModalOpen(true)}
+          className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600
+                     cursor-pointer shrink-0"
+        >
           <img alt="User Avatar" className="w-full h-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc1KrY3hAzs_b3mzGZkIzfzajdRzqAwyBk7b4QN7QmFTzfWyf7022-UjIx-ESAbie6iLUdWeK8xqKYZ-O4rkxzX_fazXz7rDV1E-tcBOq3RWgLgroK7ttKkFLA_Dki6uESzgYqFdHmy6yCyZiwDspQlEbGiX5gUoYb3WAQqX4Ce4vgczdtoQcaRgRwtHYldy5qr6MLeKizq_v6FmJENfhI9iQozpmU5KaewI-Q_wn04vlOv--wO7-w_j5sLRS4SC1VbZGjXlwq5xYm" />
-        </div>
+        </motion.div>
       </div>
     </nav>
   );
