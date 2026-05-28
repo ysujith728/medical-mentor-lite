@@ -12,9 +12,9 @@ router.post('/related', aiLimiter, getRelatedTerms);
 router.post('/quiz', aiLimiter, generateQuiz);
 router.post('/graph', aiLimiter, getGraph);
 
-// Protected Dashboard Routes (Auth bypassed for simulation)
-router.get('/dashboard/profile', getProfile);
-router.get('/dashboard/activities', getActivities);
-router.get('/dashboard/terms', getSavedTerms);
+// Protected Dashboard Routes
+router.get('/dashboard/profile', requireAuth, getProfile);
+router.get('/dashboard/activities', requireAuth, getActivities);
+router.get('/dashboard/terms', requireAuth, getSavedTerms);
 
 export default router;

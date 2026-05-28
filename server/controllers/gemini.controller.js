@@ -1,11 +1,16 @@
 import { generateJSONResponse } from '../services/gemini.service.js';
 import axios from 'axios';
 import prisma from '../config/prisma.js';
+import { logAiUsage, logSearch } from '../services/analytics.service.js';
 
 export const defineTerm = async (req, res, next) => {
+  const startTime = Date.now();
   try {
     const term = req.sanitizedTerm || req.body.term;
-    const userId = req.user?.id; // from requireAuth middleware
+    const userId = req.user?.id;
+    const prismaId = req.user?.prismaId;
+
+    if (prismaId) logSearch(prismaId, term, 'definition');
 
     const prompt = `You are a medical knowledge engine. Provide a detailed JSON response for the medical term "${term}". 
     Format MUST be exactly: {"definition": "...", "pathophysiology": "...", "clinicalRelevance": "...", "correctedTerm": "the correctly spelled term"}
@@ -20,19 +25,11 @@ export const defineTerm = async (req, res, next) => {
 
     const data = await generateJSONResponse(prompt, fallback);
     
-    // Asynchronously log this activity if user is authenticated
-    if (userId) {
-      // Find internal user id by supabaseId
-      const dbUser = await prisma.user.findUnique({ where: { supabaseId: userId } });
-      if (dbUser) {
-        await prisma.dashboardActivity.create({
-          data: {
-            userId: dbUser.id,
-            actionType: 'TERM_SEARCHED',
-            details: { term }
-          }
-        }).catch(err => console.error("Activity log error:", err));
-      }
+    if (prismaId) {
+      logAiUsage(prismaId, 'define_term', prompt.length, JSON.stringify(data).length, Date.now() - startTime);
+      await prisma.dashboardActivity.create({
+        data: { userId: prismaId, actionType: 'TERM_SEARCHED', details: { term } }
+      }).catch(err => console.error("Activity log error:", err));
     }
 
     res.json(data);
@@ -42,8 +39,10 @@ export const defineTerm = async (req, res, next) => {
 };
 
 export const getRelatedTerms = async (req, res, next) => {
+  const startTime = Date.now();
   try {
     const term = req.sanitizedTerm || req.body.term;
+    const prismaId = req.user?.prismaId;
     
     const prompt = `Provide exactly 6 related medical terminology concepts for "${term}". These must be real, distinct medical terms closely related to "${term}". Return JSON format: {"terms": ["Term 1", "Term 2", ...]}`;
     const fallback = {
@@ -51,6 +50,11 @@ export const getRelatedTerms = async (req, res, next) => {
     };
 
     const data = await generateJSONResponse(prompt, fallback);
+    
+    if (prismaId) {
+      logAiUsage(prismaId, 'related_terms', prompt.length, JSON.stringify(data).length, Date.now() - startTime);
+    }
+    
     res.json(data);
   } catch (err) {
     next(err);
@@ -58,8 +62,10 @@ export const getRelatedTerms = async (req, res, next) => {
 };
 
 export const generateQuiz = async (req, res, next) => {
+  const startTime = Date.now();
   try {
     const { topic, difficulty, numQuestions } = req.sanitizedQuiz || req.body;
+    const prismaId = req.user?.prismaId;
     
     const prompt = `Generate exactly ${numQuestions} UNIQUE, DISTINCT, and DIVERSE medical quiz questions on the topic "${topic}" with a difficulty level of "${difficulty}". Ensure no two questions are the same.
     Return JSON format exactly like:
@@ -92,6 +98,11 @@ export const generateQuiz = async (req, res, next) => {
     }));
 
     const data = await generateJSONResponse(prompt, { questions: fallbackQuestions });
+    
+    if (prismaId) {
+      logAiUsage(prismaId, 'generate_quiz', prompt.length, JSON.stringify(data).length, Date.now() - startTime);
+    }
+    
     res.json(data);
   } catch (err) {
     next(err);
@@ -99,8 +110,13 @@ export const generateQuiz = async (req, res, next) => {
 };
 
 export const getGraph = async (req, res, next) => {
+  const startTime = Date.now();
   try {
     const term = req.sanitizedTerm || req.body.term;
+    const prismaId = req.user?.prismaId;
+    
+    if (prismaId) logSearch(prismaId, term, 'graph');
+    
     const prompt = `Generate a detailed, medically accurate knowledge graph for the term "${term}".
 Return ONLY valid JSON in this exact format:
 {
@@ -124,6 +140,11 @@ CRITICAL REQUIREMENTS:
     };
 
     const data = await generateJSONResponse(prompt, fallback);
+    
+    if (prismaId) {
+      logAiUsage(prismaId, 'knowledge_graph', prompt.length, JSON.stringify(data).length, Date.now() - startTime);
+    }
+    
     res.json(data);
   } catch (err) {
     next(err);

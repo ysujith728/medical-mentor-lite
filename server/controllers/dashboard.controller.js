@@ -2,12 +2,20 @@ import prisma from '../config/prisma.js';
 
 export const getProfile = async (req, res, next) => {
   try {
-    // Generate shifting dynamic data for simulation
-    const timeFactor = Math.floor(Date.now() / 10000); // changes every 10 seconds
+    if (!req.user || !req.user.prismaId) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.prismaId },
+      include: { profile: true }
+    });
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
     res.json({
-        displayName: "Dr. Jayesh",
-        xp: 12500 + (timeFactor % 500) * 10,
-        streak: 42 + (timeFactor % 3)
+        ...user.profile,
+        role: user.role
     });
   } catch (err) {
     next(err);

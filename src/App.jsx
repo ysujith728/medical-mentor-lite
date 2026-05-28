@@ -14,6 +14,12 @@ import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAppStore from './store/useAppStore';
 import useAuthStore from './store/useAuthStore';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
+import AdminLayout from './layouts/AdminLayout';
+import AdminOverview from './pages/admin/AdminOverview';
+import AdminUserManagement from './pages/admin/AdminUserManagement';
+import AdminAiAnalytics from './pages/admin/AdminAiAnalytics';
+import AdminSearchAnalytics from './pages/admin/AdminSearchAnalytics';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,6 +60,17 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           
+          {/* Admin Routes */}
+          <Route element={<AdminProtectedRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route path="/admin" element={<Navigate to="/admin/overview" replace />} />
+              <Route path="/admin/overview" element={<AdminOverview />} />
+              <Route path="/admin/users" element={<AdminUserManagement />} />
+              <Route path="/admin/ai-analytics" element={<AdminAiAnalytics />} />
+              <Route path="/admin/search-analytics" element={<AdminSearchAnalytics />} />
+            </Route>
+          </Route>
+
           {/* Protected Application Routes */}
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>

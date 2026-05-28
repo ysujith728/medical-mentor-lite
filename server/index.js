@@ -27,7 +27,12 @@ app.use(express.json());
 app.use('/api', apiLimiter);
 
 // Routes
+import adminRoutes from './routes/admin.routes.js';
+import authRoutes from './routes/auth.routes.js';
+
 app.use('/api', apiRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error Handling (Must be last)
 app.use(errorHandler);

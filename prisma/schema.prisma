@@ -9,10 +9,16 @@ datasource db {
 }
 
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id                String             @id @default(uuid())
   supabaseId        String             @unique
   email             String             @unique
+  role              Role               @default(USER)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   profile           UserProfile?
@@ -20,6 +26,12 @@ model User {
   savedTerms        SavedTerm[]
   dashboardActivity DashboardActivity[]
   learningSessions  LearningSession[]
+  
+  // Analytics Relations
+  analyticsEvents   AnalyticsEvent[]
+  aiUsageLogs       AiUsageLog[]
+  searchLogs        SearchLog[]
+  sessionLogs       SessionLog[]
 }
 
 model UserProfile {
@@ -69,4 +81,73 @@ model LearningSession {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   durationMin Int
   createdAt   DateTime @default(now())
+}
+
+// ═════════════════════════════════════════════════════════════════════════
+// ANALYTICS & TRACKING TABLES
+// ═════════════════════════════════════════════════════════════════════════
+
+model AnalyticsEvent {
+  id            String   @id @default(uuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  eventType     String
+  eventCategory String
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([userId, createdAt])
+}
+
+model AiUsageLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  promptType     String
+  tokensInput    Int      @default(0)
+  tokensOutput   Int      @default(0)
+  responseTimeMs Int      @default(0)
+  cacheHit       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([promptType, createdAt])
+  @@index([userId, createdAt])
+}
+
+model SearchLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  searchTerm     String
+  searchCategory String?
+  resultsCount   Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([searchTerm])
+  @@index([createdAt])
+}
+
+model SessionLog {
+  id              String   @id @default(uuid())
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sessionStart    DateTime
+  sessionEnd      DateTime?
+  durationSeconds Int?
+  device          String?
+  browser         String?
+  ipHash          String?
+  createdAt       DateTime @default(now())
+
+  @@index([userId, sessionStart])
+}
+
+model SystemMetric {
+  id          String   @id @default(uuid())
+  metricName  String
+  metricValue Float
+  recordedAt  DateTime @default(now())
+
+  @@index([metricName, recordedAt])
 }
