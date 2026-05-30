@@ -22,6 +22,10 @@ const useAppStore = create((set) => ({
   setAuthModalOpen: (isOpen) => set({ isAuthModalOpen: isOpen }),
   isSettingsModalOpen: false,
   setSettingsModalOpen: (isOpen) => set({ isSettingsModalOpen: isOpen }),
+  isHelpModalOpen: false,
+  setHelpModalOpen: (isOpen) => set({ isHelpModalOpen: isOpen }),
+  isAccountModalOpen: false,
+  setAccountModalOpen: (isOpen) => set({ isAccountModalOpen: isOpen }),
   fontScale: localStorage.getItem('medix-font-scale') || 'medium',
   setFontScale: (scale) => set(() => {
     localStorage.setItem('medix-font-scale', scale);

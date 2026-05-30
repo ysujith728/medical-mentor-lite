@@ -66,6 +66,7 @@ const SideNavBar = () => {
         <motion.div 
           whileHover={{ scale: 1.02, x: 4 }}
           whileTap={{ scale: 0.98 }}
+          onClick={() => useAppStore.getState().setHelpModalOpen(true)}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg
                      text-gray-400 dark:text-gray-500
                      hover:bg-gray-50 dark:hover:bg-gray-800/60

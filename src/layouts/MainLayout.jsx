@@ -3,6 +3,8 @@ import { Outlet, useLocation } from 'react-router-dom';
 import TopNavBar from '../components/TopNavBar';
 import SideNavBar from '../components/SideNavBar';
 import SettingsModal from '../components/SettingsModal';
+import HelpCenterModal from '../components/HelpCenterModal';
+import AccountModal from '../components/AccountModal';
 
 const MainLayout = () => {
     const location = useLocation();
@@ -13,6 +15,8 @@ const MainLayout = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 font-inter transition-colors duration-300">
       <SettingsModal />
+      <HelpCenterModal />
+      <AccountModal />
       <TopNavBar />
       {!isFullScreen && <SideNavBar />}
 

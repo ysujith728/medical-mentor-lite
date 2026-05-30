@@ -122,7 +122,7 @@ const TopNavBar = () => {
         <motion.div 
           whileHover={{ scale: 1.1, borderColor: '#6366f1' }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => useAppStore.getState().setAuthModalOpen(true)}
+          onClick={() => useAppStore.getState().setAccountModalOpen(true)}
           className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600
                      cursor-pointer shrink-0"
         >
