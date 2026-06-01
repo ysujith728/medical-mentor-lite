@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Play, Bell, Sun, Moon } from 'lucide-react';
-import Dashboard from './Dashboard';
 import useAppStore from '../store/useAppStore';
+import useAuthStore from '../store/useAuthStore';
 import JAMAAnimatedLogo from '../components/JAMAAnimatedLogo';
 
 const LandingPage = () => {
@@ -139,21 +139,54 @@ const LandingPage = () => {
                     }
                   </span>
                 </button>
-
-                <div className="w-6 h-6 rounded-full overflow-hidden border border-white/30">
-                  <img alt="Avatar" className="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc1KrY3hAzs_b3mzGZkIzfzajdRzqAwyBk7b4QN7QmFTzfWyf7022-UjIx-ESAbie6iLUdWeK8xqKYZ-O4rkxzX_fazXz7rDV1E-tcBOq3RWgLgroK7ttKkFLA_Dki6uESzgYqFdHmy6yCyZiwDspQlEbGiX5gUoYb3WAQqX4Ce4vgczdtoQcaRgRwtHYldy5qr6MLeKizq_v6FmJENfhI9iQozpmU5KaewI-Q_wn04vlOv--wO7-w_j5sLRS4SC1VbZGjXlwq5xYm" />
-                </div>
               </div>
-              <Link to="/dashboard">
-                <button className={`rounded-full px-5 py-2 text-sm font-medium font-inter transition-all
-                  ${darkMode
-                    ? 'bg-white text-gray-900 hover:bg-gray-100'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
-                  }`}>
-                  Go Pro
-                </button>
-              </Link>
+
+              {useAuthStore.getState().user ? (
+                <div className="flex gap-2">
+                  <Link to="/dashboard">
+                    <button className={`rounded-full px-5 py-2 text-sm font-medium font-inter transition-all
+                      ${darkMode
+                        ? 'bg-white text-gray-900 hover:bg-gray-100'
+                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                      }`}>
+                      Dashboard
+                    </button>
+                  </Link>
+                  <button 
+                    onClick={async () => {
+                      await useAuthStore.getState().signOut();
+                      navigate('/login');
+                    }}
+                    className={`rounded-full px-5 py-2 text-sm font-medium font-inter transition-all border
+                      ${darkMode
+                        ? 'border-white/20 text-white hover:bg-white/10'
+                        : 'border-gray-300 text-gray-900 hover:bg-gray-50'
+                      }`}>
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Link to="/login">
+                    <button className={`rounded-full px-5 py-2 text-sm font-medium font-inter transition-all
+                      ${darkMode
+                        ? 'bg-indigo-600 text-white hover:bg-indigo-500'
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      }`}>
+                      Sign In
+                    </button>
+                  </Link>
+                  <Link to="/login">
+                    <button className={`rounded-full px-5 py-2 text-sm font-medium font-inter transition-all border
+                      ${darkMode
+                        ? 'border-indigo-400/50 text-indigo-300 hover:bg-indigo-900/30'
+                        : 'border-indigo-200 text-indigo-700 hover:bg-indigo-50'
+                      }`}>
+                      Admin Login
+                    </button>
+                  </Link>
+                </div>
+              )}
             </div>
           </nav>
 
@@ -255,16 +288,35 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Scaled Dashboard */}
+            {/* Static Dashboard Preview — no API calls */}
             <div className="rounded-xl overflow-hidden pointer-events-none select-none relative" style={{ height: '50vh', minHeight: '360px' }}>
-              <div className="absolute top-0 left-0" style={{
-                transform: 'scale(0.55)',
-                transformOrigin: 'top left',
-                width: `${100 / 0.55}%`,
-                height: `${100 / 0.55}%`,
-                background: darkMode ? 'hsl(222 18% 13%)' : '#ffffff',
-              }}>
-                <Dashboard />
+              <div className="absolute inset-0 flex flex-col p-8" style={{ background: darkMode ? 'hsl(222 18% 13%)' : '#ffffff' }}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/40" />
+                  <div>
+                    <div className="h-4 w-48 rounded bg-gray-200 dark:bg-gray-700 mb-2" />
+                    <div className="h-3 w-32 rounded bg-gray-100 dark:bg-gray-800" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  {[1,2,3].map(i => (
+                    <div key={i} className="rounded-xl p-4 border border-gray-100 dark:border-gray-800" style={{ background: darkMode ? 'hsl(222 18% 16%)' : '#f8fafc' }}>
+                      <div className="h-3 w-20 rounded bg-indigo-100 dark:bg-indigo-900/30 mb-3" />
+                      <div className="h-6 w-16 rounded bg-gray-200 dark:bg-gray-700" />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex-1 rounded-xl border border-gray-100 dark:border-gray-800 p-4" style={{ background: darkMode ? 'hsl(222 18% 16%)' : '#f8fafc' }}>
+                  <div className="h-3 w-28 rounded bg-gray-200 dark:bg-gray-700 mb-4" />
+                  <div className="space-y-3">
+                    {[1,2,3,4].map(i => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-4 h-4 rounded-full bg-indigo-200 dark:bg-indigo-800" />
+                        <div className="h-3 rounded bg-gray-100 dark:bg-gray-800" style={{ width: `${60 + i * 8}%` }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -305,7 +357,9 @@ const LandingPage = () => {
               animate={{ scale: 1 }}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Dashboard />
+              <div className="flex items-center justify-center h-full">
+                <div className="text-lg font-medium text-gray-500 animate-pulse">Loading Dashboard...</div>
+              </div>
             </motion.div>
           </motion.div>
         )}

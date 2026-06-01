@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 
+// This will be set by App.jsx after QueryClient is created
+let _queryClient = null;
+export const setQueryClient = (qc) => { _queryClient = qc; };
+
 const useAuthStore = create((set) => ({
   user: null,
   session: null,
@@ -22,8 +26,13 @@ const useAuthStore = create((set) => ({
 
   signOut: async () => {
     await supabase.auth.signOut();
+    // Clear all cached query data to prevent data bleed between sessions
+    if (_queryClient) {
+      _queryClient.clear();
+    }
     set({ user: null, session: null });
   }
 }));
 
 export default useAuthStore;
+

@@ -110,6 +110,12 @@ const Login = () => {
                 Don't have an account? Sign up
               </Link>
             </div>
+            
+            <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-semibold text-indigo-600 dark:text-indigo-400">Admin Access:</span> Sign in with your standard account first, then use the <strong>Admin Login</strong> button in the top navigation to upgrade your role and view analytics.
+              </p>
+            </div>
           </form>
         </div>
       </motion.div>

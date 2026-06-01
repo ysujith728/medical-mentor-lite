@@ -108,6 +108,21 @@ const TopNavBar = () => {
           </span>
         </button>
 
+        {/* Admin Access Button */}
+        <motion.button 
+          onClick={() => {
+            const state = useAppStore.getState();
+            state.setAccountModalOpen(true);
+          }}
+          whileHover={{ scale: 1.05, backgroundColor: darkMode ? '#3730a3' : '#e0e7ff' }}
+          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-semibold text-sm
+                     rounded-full transition-colors whitespace-nowrap ml-1 flex items-center gap-1.5 border border-indigo-200 dark:border-indigo-700"
+        >
+          <span className="material-symbols-outlined text-sm">admin_panel_settings</span>
+          Admin Login
+        </motion.button>
+
         {/* Go Pro */}
         <motion.button 
           whileHover={{ scale: 1.05, boxShadow: "0px 0px 8px rgb(99, 102, 241)" }}
@@ -124,7 +139,7 @@ const TopNavBar = () => {
           whileTap={{ scale: 0.9 }}
           onClick={() => useAppStore.getState().setAccountModalOpen(true)}
           className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-600
-                     cursor-pointer shrink-0"
+                     cursor-pointer shrink-0 ml-2"
         >
           <img alt="User Avatar" className="w-full h-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc1KrY3hAzs_b3mzGZkIzfzajdRzqAwyBk7b4QN7QmFTzfWyf7022-UjIx-ESAbie6iLUdWeK8xqKYZ-O4rkxzX_fazXz7rDV1E-tcBOq3RWgLgroK7ttKkFLA_Dki6uESzgYqFdHmy6yCyZiwDspQlEbGiX5gUoYb3WAQqX4Ce4vgczdtoQcaRgRwtHYldy5qr6MLeKizq_v6FmJENfhI9iQozpmU5KaewI-Q_wn04vlOv--wO7-w_j5sLRS4SC1VbZGjXlwq5xYm" />

@@ -10,7 +10,7 @@ if (process.env.GROQ_API_KEY) {
   ai = new Groq({ apiKey: process.env.GROQ_API_KEY });
   console.log("Groq AI initialized successfully in service layer.");
 } else {
-  console.warn("No GROQ_API_KEY found. Falling back to mock responses.");
+  console.error("CRITICAL: No GROQ_API_KEY found. AI features will return errors.");
 }
 
 const CACHE_TTL_SECONDS = 60 * 60 * 24; // 24 hours
@@ -20,7 +20,7 @@ const getCacheKey = (prompt) => {
   return 'ai_cache:' + crypto.createHash('md5').update(prompt).digest('hex');
 };
 
-export const generateJSONResponse = async (prompt, fallbackMock) => {
+export const generateJSONResponse = async (prompt) => {
   // Check Redis Cache first
   if (redis) {
     try {
@@ -28,7 +28,6 @@ export const generateJSONResponse = async (prompt, fallbackMock) => {
       const cached = await redis.get(cacheKey);
       if (cached) {
         console.log("Cache hit for AI response");
-        // If upstash returns stringified object, parse it. If it auto-parses, just return it.
         return typeof cached === 'string' ? JSON.parse(cached) : cached;
       }
     } catch (e) {
@@ -37,36 +36,32 @@ export const generateJSONResponse = async (prompt, fallbackMock) => {
   }
 
   // Hit Groq API if not cached
-  if (ai) {
+  if (!ai) {
+    throw new Error('AI service unavailable: GROQ_API_KEY not configured.');
+  }
+
+  const completion = await ai.chat.completions.create({
+    messages: [{ role: "user", content: prompt }],
+    model: "llama-3.3-70b-versatile",
+    temperature: 0.7,
+    max_tokens: 1024,
+    response_format: { type: "json_object" }
+  });
+  
+  let text = completion.choices[0]?.message?.content || "";
+  text = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
+  const result = JSON.parse(text);
+
+  // Save to cache
+  if (redis) {
     try {
-      const completion = await ai.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
-        model: "llama-3.3-70b-versatile",
-        temperature: 0.7,
-        max_tokens: 1024,
-        response_format: { type: "json_object" }
-      });
-      
-      let text = completion.choices[0]?.message?.content || "";
-      text = text.replace(/```json/gi, '').replace(/```/gi, '').trim();
-      const result = JSON.parse(text);
-
-      // Save to cache
-      if (redis) {
-        try {
-          const cacheKey = getCacheKey(prompt);
-          await redis.set(cacheKey, JSON.stringify(result), { ex: CACHE_TTL_SECONDS });
-        } catch (e) {
-          console.error("Redis Cache Set Error:", e);
-        }
-      }
-
-      return result;
+      const cacheKey = getCacheKey(prompt);
+      await redis.set(cacheKey, JSON.stringify(result), { ex: CACHE_TTL_SECONDS });
     } catch (e) {
-      console.error("Groq Generation Error:", e.message || e);
-      return fallbackMock;
+      console.error("Redis Cache Set Error:", e);
     }
   }
 
-  return fallbackMock;
+  return result;
 };
+

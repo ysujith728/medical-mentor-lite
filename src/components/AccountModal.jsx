@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, User as UserIcon, Shield, Zap, Flame, X } from 'lucide-react';
+import { LogOut, User as UserIcon, Shield, Zap, Flame, X, Key, Loader2, ArrowRight } from 'lucide-react';
 import useAppStore from '../store/useAppStore';
 import useAuthStore from '../store/useAuthStore';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchProfile } from '../services/dashboardService';
+import api from '../services/apiService';
+import { useNavigate } from 'react-router-dom';
 
 const AccountModal = () => {
   const { isAccountModalOpen, setAccountModalOpen } = useAppStore();
   const { user, signOut } = useAuthStore();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const [inviteCode, setInviteCode] = useState('');
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [upgradeError, setUpgradeError] = useState('');
 
   const { data: profile } = useQuery({
     queryKey: ['profile'],
@@ -21,6 +29,28 @@ const AccountModal = () => {
     setAccountModalOpen(false);
     await signOut();
     window.location.href = '/login';
+  };
+
+  const handleUpgrade = async (e) => {
+    e.preventDefault();
+    if (!inviteCode) return;
+    
+    setUpgradeLoading(true);
+    setUpgradeError('');
+    try {
+      await api.post('/auth/promote-admin', { inviteCode });
+      await queryClient.invalidateQueries({ queryKey: ['profile'] });
+      setInviteCode('');
+    } catch (err) {
+      setUpgradeError(err.response?.data?.error || 'Invalid invite code.');
+    } finally {
+      setUpgradeLoading(false);
+    }
+  };
+
+  const goToAdmin = () => {
+    setAccountModalOpen(false);
+    navigate('/admin');
   };
 
   if (!isAccountModalOpen) return null;
@@ -96,16 +126,58 @@ const AccountModal = () => {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 py-3 rounded-xl font-medium transition-colors"
-              >
-                <LogOut className="w-5 h-5" />
-                Sign Out
-              </button>
-            </div>
+            {/* Admin Section */}
+            {profile?.role === 'ADMIN' ? (
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  onClick={goToAdmin}
+                  className="w-full flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl font-medium transition-colors mb-3"
+                >
+                  <Shield className="w-5 h-5" />
+                  Admin Dashboard
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 py-3 rounded-xl font-medium transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+                  <Key className="w-4 h-4 text-indigo-500" />
+                  Admin Upgrade
+                </h4>
+                <form onSubmit={handleUpgrade} className="flex gap-2 mb-4">
+                  <input
+                    type="password"
+                    placeholder="Enter invite code"
+                    value={inviteCode}
+                    onChange={(e) => setInviteCode(e.target.value)}
+                    className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 dark:text-white"
+                  />
+                  <button
+                    type="submit"
+                    disabled={upgradeLoading || !inviteCode}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
+                  >
+                    {upgradeLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Upgrade'}
+                  </button>
+                </form>
+                {upgradeError && <p className="text-red-500 text-xs mt-2 mb-4">{upgradeError}</p>}
+                
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 py-3 rounded-xl font-medium transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         </motion.div>
       </motion.div>
@@ -114,3 +186,4 @@ const AccountModal = () => {
 };
 
 export default AccountModal;
+

@@ -6,11 +6,11 @@ import { aiLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
-// Public / AI Routes
-router.post('/define', aiLimiter, defineTerm);
-router.post('/related', aiLimiter, getRelatedTerms);
-router.post('/quiz', aiLimiter, generateQuiz);
-router.post('/graph', aiLimiter, getGraph);
+// AI Routes — requireAuth ensures all analytics events have a valid userId
+router.post('/define', requireAuth, aiLimiter, defineTerm);
+router.post('/related', requireAuth, aiLimiter, getRelatedTerms);
+router.post('/quiz', requireAuth, aiLimiter, generateQuiz);
+router.post('/graph', requireAuth, aiLimiter, getGraph);
 
 // Protected Dashboard Routes
 router.get('/dashboard/profile', requireAuth, getProfile);

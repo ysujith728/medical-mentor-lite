@@ -4,9 +4,13 @@ import prisma from '../config/prisma.js';
 
 dotenv.config();
 
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+  throw new Error('CRITICAL: SUPABASE_URL and SUPABASE_ANON_KEY must be set in environment variables.');
+}
+
 const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://mock.supabase.co',
-  process.env.SUPABASE_ANON_KEY || 'mock-key'
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
 );
 
 export const requireAuth = async (req, res, next) => {

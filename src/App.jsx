@@ -13,7 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import useAppStore from './store/useAppStore';
-import useAuthStore from './store/useAuthStore';
+import useAuthStore, { setQueryClient } from './store/useAuthStore';
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 import AdminLayout from './layouts/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
@@ -35,6 +35,7 @@ function App() {
   const { initialize } = useAuthStore();
 
   useEffect(() => {
+    setQueryClient(queryClient);
     initialize();
   }, [initialize]);
 

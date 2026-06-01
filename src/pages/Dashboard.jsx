@@ -9,21 +9,21 @@ const Dashboard = () => {
   const { user } = useAuthStore();
   
   const { data: profile, isLoading: loadingProfile } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', user?.id],
     queryFn: fetchProfile,
-    refetchInterval: 5000
+    enabled: !!user,
   });
 
   const { data: activities, isLoading: loadingActivities } = useQuery({
-    queryKey: ['activities'],
+    queryKey: ['activities', user?.id],
     queryFn: fetchActivities,
-    refetchInterval: 5000
+    enabled: !!user,
   });
 
   const { data: savedTerms, isLoading: loadingTerms } = useQuery({
-    queryKey: ['savedTerms'],
+    queryKey: ['savedTerms', user?.id],
     queryFn: fetchSavedTerms,
-    refetchInterval: 5000
+    enabled: !!user,
   });
 
   if (loadingProfile) {

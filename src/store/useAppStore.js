@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 const useAppStore = create((set) => ({
-  moduleActive: 'Pathology v2.4',
+  moduleActive: 'Medical Hub',
   setModuleActive: (module) => set({ moduleActive: module }),
 
   // Dark Mode State
