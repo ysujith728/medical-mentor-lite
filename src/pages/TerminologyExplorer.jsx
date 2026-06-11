@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { defineTerm, getRelatedTerms, getYoutubeVideos } from '../services/apiService';
+import { saveTerm, fetchSavedTerms } from '../services/dashboardService';
 import useAppStore from '../store/useAppStore';
 import { useNavigate } from 'react-router-dom';
 import { capitalizeWords, truncateText } from '../utils/textUtils';
@@ -12,10 +13,24 @@ const TerminologyExplorer = () => {
   const { searchTerm, setSearchTerm, correctedTerm, setCorrectedTerm, definitionData, setDefinitionData, relatedTerms, setRelatedTerms, youtubeVideos, setYoutubeVideos } = useAppStore();
 
   const [activeSearch, setActiveSearch] = useState(searchTerm || 'Atrial Fibrillation');
+  const [isSaving, setIsSaving] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+  };
 
   const { data: defData, isLoading: isLoadingDef, isError: isErrorDef } = useQuery({ queryKey: ['definition', activeSearch], queryFn: () => defineTerm(activeSearch), enabled: !!activeSearch });
   const { data: relTerms, isLoading: isLoadingRel } = useQuery({ queryKey: ['related', activeSearch], queryFn: () => getRelatedTerms(activeSearch), enabled: !!activeSearch });
   const { data: videos, isLoading: isLoadingVid } = useQuery({ queryKey: ['youtube', activeSearch], queryFn: () => getYoutubeVideos(activeSearch), enabled: !!activeSearch });
+
+  const { data: savedTerms, refetch: refetchSavedTerms } = useQuery({
+    queryKey: ['savedTerms'],
+    queryFn: fetchSavedTerms,
+  });
+
+  const isSaved = savedTerms?.some(t => t.term.toLowerCase() === activeSearch.toLowerCase());
 
   useEffect(() => { 
     if (defData) { 
@@ -44,8 +59,49 @@ const TerminologyExplorer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
 
+  const handleSaveToLibrary = async () => {
+    if (isSaving || isSaved) return;
+    setIsSaving(true);
+    try {
+      await saveTerm(
+        activeSearch,
+        definitionData.definition,
+        definitionData.pathophysiology,
+        definitionData.clinicalRelevance
+      );
+      await refetchSavedTerms();
+      showToast('Term saved to study library!', 'success');
+    } catch (error) {
+      console.error(error);
+      showToast('Failed to save term to library.', 'error');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden font-inter text-gray-900 dark:text-white">
+      {/* Toast Alert */}
+      <AnimatePresence>
+        {toast.show && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className={`fixed bottom-8 right-8 z-50 px-5 py-3.5 rounded-xl shadow-xl flex items-center gap-3 backdrop-blur-md border ${
+              toast.type === 'success'
+                ? 'bg-emerald-500/95 border-emerald-400/30 text-white'
+                : 'bg-rose-500/95 border-rose-400/30 text-white'
+            }`}
+          >
+            <span className="material-symbols-outlined text-lg">
+              {toast.type === 'success' ? 'check_circle' : 'error'}
+            </span>
+            <span className="text-sm font-medium">{toast.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Search Bar */}
       <div className="sticky top-16 z-30 px-6 lg:px-8 pt-2 pb-4 -mt-12
                       bg-white/80 dark:bg-gray-950/80
@@ -132,8 +188,24 @@ const TerminologyExplorer = () => {
                     </section>
 
                     <div className="pt-5 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between">
-                      <button className="flex items-center gap-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-sm">
-                        <span className="material-symbols-outlined text-base">bookmark</span> Save to Library
+                      <button
+                        onClick={handleSaveToLibrary}
+                        disabled={isSaving || isSaved}
+                        className={`flex items-center gap-2 transition-colors text-sm font-medium ${
+                          isSaved
+                            ? 'text-emerald-500 cursor-not-allowed'
+                            : isSaving
+                            ? 'text-gray-400 dark:text-gray-500 cursor-wait'
+                            : 'text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400'
+                        }`}
+                      >
+                        <span
+                          className="material-symbols-outlined text-base font-medium"
+                          style={isSaved ? { fontVariationSettings: "'FILL' 1" } : {}}
+                        >
+                          bookmark
+                        </span>
+                        {isSaved ? 'Already Saved' : isSaving ? 'Saving...' : 'Save to Library'}
                       </button>
                       <button
                         onClick={() => navigate(`/graph/${encodeURIComponent(activeSearch)}`)}
@@ -152,38 +224,38 @@ const TerminologyExplorer = () => {
           <div className="card-panel p-5 rounded-2xl">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Live Knowledge Casts</h3>
             {isLoadingVid ? (
-                <div className="aspect-video w-full rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
+              <div className="aspect-video w-full rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
             ) : youtubeVideos && youtubeVideos.length > 0 ? (
-               <div className="space-y-3">
-                 {youtubeVideos.map(vid => (
-                     <a
-                       key={vid.id}
-                       href={vid.url || `https://www.youtube.com/watch?v=${vid.id}`}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="flex gap-3 group cursor-pointer"
-                     >
-                          <div className="w-28 aspect-video rounded-lg bg-gray-100 dark:bg-gray-700 overflow-hidden relative flex-shrink-0">
-                             <img src={vid.thumbnail} className="object-cover w-full h-full opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" alt="thumbnail" />
-                             <div className="absolute bottom-1 right-1 bg-black/70 px-1 py-0.5 text-[10px] rounded text-white font-medium">{vid.duration}</div>
-                             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                               <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
-                                 <svg className="w-3 h-3 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                               </div>
-                             </div>
-                          </div>
-                          <div className="flex-1 flex flex-col justify-center min-w-0">
-                             <p className="text-sm font-medium text-gray-900 dark:text-white leading-tight group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2">{vid.title}</p>
-                             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
-                               <svg className="w-3 h-3 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.5a8.19 8.19 0 0 0 4.79 1.52V6.57a4.85 4.85 0 0 1-1.02.12z"/></svg>
-                               Watch on YouTube →
-                             </p>
-                          </div>
-                     </a>
-                 ))}
-               </div>
+              <div className="space-y-3">
+                {youtubeVideos.map(vid => (
+                  <a
+                    key={vid.id}
+                    href={vid.url || `https://www.youtube.com/watch?v=${vid.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex gap-3 group cursor-pointer"
+                  >
+                    <div className="w-28 aspect-video rounded-lg bg-gray-100 dark:bg-gray-700 overflow-hidden relative flex-shrink-0">
+                      <img src={vid.thumbnail} className="object-cover w-full h-full opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300" alt="thumbnail" />
+                      <div className="absolute bottom-1 right-1 bg-black/70 px-1 py-0.5 text-[10px] rounded text-white font-medium">{vid.duration}</div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                          <svg className="w-3 h-3 text-white ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white leading-tight group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2">{vid.title}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
+                        <svg className="w-3 h-3 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.5a8.19 8.19 0 0 0 4.79 1.52V6.57a4.85 4.85 0 0 1-1.02.12z" /></svg>
+                        Watch on YouTube →
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
             ) : (
-                 <div className="text-center p-4 text-gray-400 dark:text-gray-500 text-sm">No visual assets available.</div>
+              <div className="text-center p-4 text-gray-400 dark:text-gray-500 text-sm">No visual assets available.</div>
             )}
           </div>
 
@@ -193,24 +265,24 @@ const TerminologyExplorer = () => {
               <span className="text-xs text-indigo-600 dark:text-indigo-400 font-semibold">Expand Map</span>
             </h3>
             {isLoadingRel ? (
-                 <div className="flex flex-wrap gap-2">{[1,2,3,4,5].map(i => <div key={i} className="h-9 w-24 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse"></div>)}</div>
+              <div className="flex flex-wrap gap-2">{[1, 2, 3, 4, 5].map(i => <div key={i} className="h-9 w-24 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse"></div>)}</div>
             ) : (
-                 <div className="flex flex-wrap gap-2">
-                   {relatedTerms.map((term, i) => (
-                       <button onClick={() => handleRelatedClick(term)} key={i} className="px-4 py-2.5 rounded-lg
-                                 bg-gray-50 dark:bg-gray-800/60
-                                 border border-gray-200 dark:border-gray-700/50
-                                 hover:border-indigo-300 dark:hover:border-indigo-600
-                                 hover:bg-indigo-50 dark:hover:bg-indigo-900/20
-                                 text-sm font-medium transition-all duration-300
-                                 flex items-center gap-2 group
-                                 text-gray-600 dark:text-gray-400
-                                 hover:text-indigo-600 dark:hover:text-indigo-400">
-                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 opacity-50 group-hover:opacity-100"></span>
-                         {term}
-                       </button>
-                   ))}
-                 </div>
+              <div className="flex flex-wrap gap-2">
+                {relatedTerms.map((term, i) => (
+                  <button onClick={() => handleRelatedClick(term)} key={i} className="px-4 py-2.5 rounded-lg
+                                bg-gray-50 dark:bg-gray-800/60
+                                border border-gray-200 dark:border-gray-700/50
+                                hover:border-indigo-300 dark:hover:border-indigo-600
+                                hover:bg-indigo-50 dark:hover:bg-indigo-900/20
+                                text-sm font-medium transition-all duration-300
+                                flex items-center gap-2 group
+                                text-gray-600 dark:text-gray-400
+                                hover:text-indigo-600 dark:hover:text-indigo-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 opacity-50 group-hover:opacity-100"></span>
+                    {term}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
         </div>
