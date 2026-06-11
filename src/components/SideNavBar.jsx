@@ -46,6 +46,10 @@ const SideNavBar = () => {
           <span className="material-symbols-outlined text-xl">history</span>
           <span>History</span>
         </NavLink>
+        <NavLink to="/library" className={navLink}>
+          <span className="material-symbols-outlined text-xl">bookmark</span>
+          <span>Library</span>
+        </NavLink>
       </div>
 
       <div className="mt-auto border-t border-gray-200 dark:border-gray-700/60 pt-4 space-y-1">
