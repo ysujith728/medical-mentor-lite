@@ -145,3 +145,28 @@ export const deleteSavedTerm = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getRecentSearches = async (req, res, next) => {
+  try {
+    if (!req.user || !req.user.prismaId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const recentSearches = await prisma.searchLog.findMany({
+      where: { userId: req.user.prismaId },
+      orderBy: { createdAt: 'desc' },
+      distinct: ['searchTerm'],
+      take: 4
+    });
+
+    const recentTerms = recentSearches.map(search => ({
+      term: search.searchTerm,
+      definition: search.searchCategory || 'Recently searched term',
+      createdAt: search.createdAt
+    }));
+
+    res.json(recentTerms);
+  } catch (err) {
+    next(err);
+  }
+};

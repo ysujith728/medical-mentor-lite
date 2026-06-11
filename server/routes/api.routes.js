@@ -1,7 +1,7 @@
 import express from 'express';
 import { defineTerm, getRelatedTerms, generateQuiz, getGraph } from '../controllers/gemini.controller.js';
 import { getYoutubeVideos } from '../controllers/youtube.controller.js';
-import { getProfile, getActivities, getSavedTerms, saveTerm, deleteSavedTerm } from '../controllers/dashboard.controller.js';
+import { getProfile, getActivities, getSavedTerms, saveTerm, deleteSavedTerm, getRecentSearches } from '../controllers/dashboard.controller.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
 import { aiLimiter } from '../middleware/rateLimiter.js';
 
@@ -18,6 +18,7 @@ router.get('/youtube', requireAuth, getYoutubeVideos);
 router.get('/dashboard/profile', requireAuth, getProfile);
 router.get('/dashboard/activities', requireAuth, getActivities);
 router.get('/dashboard/terms', requireAuth, getSavedTerms);
+router.get('/dashboard/recent-searches', requireAuth, getRecentSearches);
 router.post(
     '/dashboard/terms',
     requireAuth,
