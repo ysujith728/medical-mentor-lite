@@ -14,3 +14,18 @@ export const fetchSavedTerms = async () => {
   const response = await api.get('/dashboard/terms');
   return response.data;
 };
+
+export const saveTerm = async (term, definition, pathophysiology, clinicalRelevance) => {
+  const response = await api.post('/dashboard/terms', {
+    term,
+    definition,
+    pathophysiology,
+    clinicalRelevance
+  });
+
+  return response.data;
+};
+export const deleteSavedTerm = async (id) => {
+  const response = await api.delete(`/dashboard/terms/${id}`);
+  return response.data;
+};

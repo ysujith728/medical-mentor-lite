@@ -9,6 +9,7 @@ import QuizConfigurator from './pages/QuizConfigurator';
 import QuizEngine from './pages/QuizEngine';
 import AnatomyVisualizer from './pages/AnatomyVisualizer';
 import KnowledgeGraphPage from './pages/KnowledgeGraphPage';
+import StudyLibrary from './pages/StudyLibrary';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -77,6 +78,7 @@ function App() {
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/terminology" element={<TerminologyExplorer />} />
+              <Route path="/library" element={<StudyLibrary />} />
               <Route path="/quiz" element={<QuizConfigurator />} />
               <Route path="/quiz/engine" element={<QuizEngine />} />
               <Route path="/anatomy" element={<AnatomyVisualizer />} />
