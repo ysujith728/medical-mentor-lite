@@ -187,13 +187,14 @@ git clone https://github.com/YOUR_USERNAME/medical-mentor-lite.git
 cd medical-mentor-lite
 
 # 2. Install dependencies
+# (This will also automatically run 'npx prisma generate' via postinstall script)
 npm install
 
 # 3. Configure environment variables
 cp .env.example .env
 ```
 
-Open `.env` and add your API key:
+Open `.env` and add your configurations:
 
 ```env
 # Gemini API Key (Required for AI generation)
@@ -201,6 +202,25 @@ GEMINI_API_KEY=your_api_key_here
 
 # Backend Server Port
 PORT=3001
+
+# Database Config (Prisma connection to PostgreSQL/Supabase)
+DATABASE_URL=your_postgres_pooler_url
+DIRECT_URL=your_postgres_direct_url
+
+# JWT Secret (Must match Supabase JWT secret)
+JWT_SECRET=your_supabase_jwt_secret
+```
+
+### Database Setup
+
+Run the following commands to apply the schema to your database and ensure your Prisma client is generated:
+
+```bash
+# Push the schema structure to the PostgreSQL database
+npx prisma db push
+
+# Generate the Prisma client (if not already done during installation)
+npx prisma generate
 ```
 
 ### Run the Application
@@ -215,7 +235,7 @@ npm run dev
 | Frontend | `http://localhost:5173` |
 | API Server | `http://localhost:3001` |
 
-> **💡 Note:** The app works **without** a Gemini API key — all API endpoints gracefully fall back to realistic mock data, so you can explore the full UI immediately.
+> **💡 Note:** The app works **without** a Gemini API key — all API endpoints gracefully fall back to realistic mock data, so you can explore the full UI immediately. However, a database connection is required for saving study history and bookmarking terms to the library.
 
 <br/>
 
